@@ -1,6 +1,6 @@
 package com.ludo.safetynetalerts.dto;
 
-import com.ludo.safetynet3.model.Persons;
+import com.ludo.safetynetalerts.model.Persons;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

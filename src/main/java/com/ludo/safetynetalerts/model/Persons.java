@@ -20,5 +20,4 @@ public class Persons {
     @JsonIgnore
     private Firestations firestations;
 
-
 }
