@@ -72,7 +72,6 @@ public class PersonsServiceImpl implements PersonsServiceInterface {
 
         for (Persons person : personsDaoInterface.getAll()) {
             if (person.getAddress().equals(address)) {
-                System.out.println(person.getMedicalRecords().getAge());
                 if (person.getMedicalRecords().getAge() <= 18) {
                     isWhithChild = true;
                 }
