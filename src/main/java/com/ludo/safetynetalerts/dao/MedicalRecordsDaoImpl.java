@@ -15,6 +15,6 @@ public class MedicalRecordsDaoImpl implements MedicalRecordsDaoInterface {
 
     @Override
     public List<MedicalRecords> getAll() {
-        return dataBase.getMedicalrecords();
+        return dataBase.getMedicalRecords();
     }
 }
