@@ -20,7 +20,7 @@ public class DataBase {
 
     private List<Persons> persons;
     private List<Firestations> firestations;
-    private List<MedicalRecords> medicalRecords;
+    private List<MedicalRecords> medicalrecords;
 
     private static final Logger logger = LogManager.getLogger(DataBase.class);
 
@@ -36,10 +36,10 @@ public class DataBase {
             dataBase = mapper.readValue(jsonData, DataBase.class);
             this.persons = dataBase.getPersons();
             this.firestations = dataBase.getFirestations();
-            this.medicalRecords = dataBase.getMedicalRecords();
+            this.medicalrecords = dataBase.getMedicalrecords();
 
             for (Persons person: this.persons ) {
-                for (MedicalRecords medicalRecords : this.medicalRecords) {
+                for (MedicalRecords medicalRecords : this.medicalrecords) {
                     if (medicalRecords.getFirstName().equals(person.getFirstName()) && medicalRecords.getLastName().equals(person.getLastName())) {
                         person.setMedicalRecords(medicalRecords);
                     }
@@ -56,7 +56,7 @@ public class DataBase {
                 }
             }
 
-            for (MedicalRecords medicalRecord : dataBase.medicalRecords) {
+            for (MedicalRecords medicalRecord : dataBase.medicalrecords) {
                 int age = AgeCalculator.calculateAge(medicalRecord.getBirthdate(), LocalDate.now());
                 medicalRecord.setAge(age);
             }

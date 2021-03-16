@@ -7,6 +7,12 @@ import com.ludo.safetynetalerts.model.Firestations;
 
 import java.util.List;
 
+/**
+ * FireStation service interface.
+ *
+ * @author Ludovic Allegaert
+ */
+
 public interface FirestationsServiceInterface {
 
     List<Firestations> findAll();

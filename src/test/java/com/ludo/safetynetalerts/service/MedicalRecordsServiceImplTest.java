@@ -54,7 +54,7 @@ class MedicalRecordsServiceImplTest {
 
     @BeforeEach
     public void setUpBeforeEachTest() {
-        when(dataBase.getMedicalRecords()).thenReturn(medicalRecordsList);
+        when(dataBase.getMedicalrecords()).thenReturn(medicalRecordsList);
     }
 
     @Test

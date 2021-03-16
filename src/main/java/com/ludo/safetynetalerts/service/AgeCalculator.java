@@ -28,11 +28,16 @@ public class AgeCalculator {
 
     public static int calculateAge(LocalDate birthDate, LocalDate currentDate) {
 
-        if (birthDate != null) {
-            return Period.between(birthDate, currentDate).getYears();
+        int age;
+
+        if (birthDate != null && birthDate.isBefore(LocalDate.now())) {
+            age= Period.between(birthDate, currentDate).getYears();
         } else {
+            logger.error("Invalid birthdate "+ birthDate);
             return 0;
         }
+
+        return  age;
     }
 
 }

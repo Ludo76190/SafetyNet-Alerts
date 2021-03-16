@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 @Service
 public class FirestationsServiceImpl implements FirestationsServiceInterface{
 
+    /**
+     * Logger class.
+     */
     private static final Logger logger = LogManager.getLogger(FirestationsServiceImpl.class);
 
     @Autowired
@@ -29,59 +32,103 @@ public class FirestationsServiceImpl implements FirestationsServiceInterface{
     @Autowired
     PersonsDaoInterface personsDaoInterface;
 
+    /**
+     * Récupère la liste de toutes les casernes
+     *
+     * @return Liste des casernes existantes
+     */
     @Override
     public List<Firestations> findAll() {
-        return firestationsDaoInterface.getAll();
-    }
-
-    @Override
-    public List<Firestations> save(Firestations savedFirestation) {
-        List<Firestations> firestation = firestationsDaoInterface.getAll();
-        for (Firestations firestations : firestation) {
-            if (firestations.getAddress().equals(savedFirestation.getAddress())) {
-                return null;
-            }
-        }
-        firestation.add(savedFirestation);
-        return firestation;
-    }
-
-    @Override
-    public Firestations updateFirestation(Firestations updatedFirestation) {
-        for (Firestations firestation : firestationsDaoInterface.getAll()) {
-            if (firestation.getAddress().equals(updatedFirestation.getAddress()) && firestation.getStation().equals(updatedFirestation.getStation())) {
-                logger.error("Firestation already Exist.");
-            } else if (firestation.getAddress().equals(updatedFirestation.getAddress()) && !firestation.getStation().equals(updatedFirestation.getStation())) {
-                firestation.setStation(updatedFirestation.getStation());
-                return firestation;
-            }
+        try {
+            return firestationsDaoInterface.getAll();
+        } catch (Exception exception) {
+            logger.error("Erreur lors de la récupération de la liste des casernes: " + exception.getMessage());
         }
         return null;
     }
 
+    /**
+     * Sauvegarder la liste des casernes
+     *
+     * @param savedFirestation Liste à sauvegarder
+     */
     @Override
-    public boolean deleteFirestation(String address) {
-        List<Firestations> firestations = firestationsDaoInterface.getAll();
-        return firestations.removeIf(firestation -> firestation.getAddress().equals(address));
+    public List<Firestations> save(Firestations savedFirestation) {
+        try {
+            List<Firestations> firestation = firestationsDaoInterface.getAll();
+            for (Firestations firestations : firestation) {
+                if (firestations.getAddress().equals(savedFirestation.getAddress())) {
+                    return null;
+                }
+            }
+            firestation.add(savedFirestation);
+            return firestation;
+        } catch (Exception exception) {
+            logger.error("Erreur lors de la sauvegarde des casernes: " + exception.getMessage());
+        }
+        return null;
     }
 
+    /**
+     * Mise à jour du numéro d'une caserne
+     *
+     * @param updatedFirestation caserne à mettre à jour
+     */
+    @Override
+    public Firestations updateFirestation(Firestations updatedFirestation) {
+        try {
+            for (Firestations firestation : firestationsDaoInterface.getAll()) {
+                if (firestation.getAddress().equals(updatedFirestation.getAddress()) && firestation.getStation().equals(updatedFirestation.getStation())) {
+                    logger.error("Firestation already Exist.");
+                } else if (firestation.getAddress().equals(updatedFirestation.getAddress()) && !firestation.getStation().equals(updatedFirestation.getStation())) {
+                    firestation.setStation(updatedFirestation.getStation());
+                    return firestation;
+                }
+            }
+        } catch (Exception exception) {
+            logger.error("Erreur lors de la mise à jour de la caserne ;" + exception.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * suppression d'une d'une caserne avec son adresse
+     *
+     * @param address adresse de la caserne à supprimer
+     */
+    @Override
+    public boolean deleteFirestation(String address) {
+        try {
+            List<Firestations> firestations = firestationsDaoInterface.getAll();
+            return firestations.removeIf(firestation -> firestation.getAddress().equals(address));
+        } catch (Exception exception) {
+            logger.error("Erreur lors de la suppression de la caserne : " + exception.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * recherche d'une d'une caserne avec son numéro
+     *
+     * @param number numéro de la caserne à rechercher
+     */
     @Override
     public PersonCounterDto findByNumber(String number) {
 
-        List<String> personAddress = new ArrayList<>();
         List<Persons> foundPerson = new ArrayList<>();
+
+        List<Persons> persons = new ArrayList<>();
+        try {
+            persons=personsDaoInterface.getAll();
+        } catch (Exception exception) {
+            logger.error("Erreur lors de la recherche des caserne par le numéro: " + exception.getMessage());
+        }
 
         int nbChildren =0;
         int nbAdults = 0;
 
-        for (Firestations firestation : firestationsDaoInterface.getAll()) {
-            if (firestation.getStation().equals(number)) {
-                personAddress.add(firestation.getAddress());
-            }
-        }
-
-        for (Persons person : personsDaoInterface.getAll()) {
-            if (personAddress.contains(person.getAddress())) {
+        for (Persons person : persons) {
+            if (person.getFirestations().getStation().equals(number)) {
                 if (person.getMedicalRecords().getAge() > 18) {
                     nbAdults++;
                 } else {
@@ -94,63 +141,77 @@ public class FirestationsServiceImpl implements FirestationsServiceInterface{
         return new PersonCounterDto(foundPerson, nbAdults, nbChildren);
     }
 
+    /**
+     * recherche des numéro de téléphone assoicé au numéro de caserne
+     *
+     * @param number numéro de la caserne à rechercher
+     */
     @Override
     public List<String> phoneAlert(String number) {
 
-        List<String> personAddress = new ArrayList<>();
         List<String> personPhone = new ArrayList<>();
-        boolean stationNumberExist = false;
 
-        for (Firestations firestation : firestationsDaoInterface.getAll()) {
-            if (firestation.getStation().equals(number)) {
-                personAddress.add(firestation.getAddress());
-                stationNumberExist = true;
+        List<Persons> persons = new ArrayList<>();
+        try {
+            persons=personsDaoInterface.getAll();
+        } catch (Exception exception) {
+            logger.error("Erreur lors de la recherche des numéro de téléphone associé au numéro de la caserne: " + exception.getMessage());
+        }
+
+        for (Persons person : persons) {
+            if (person.getFirestations().getStation().equals(number)) {
+                personPhone.add(person.getPhone());
             }
         }
 
-        if (stationNumberExist) {
-            for (Persons person : personsDaoInterface.getAll()) {
-                if (personAddress.contains(person.getAddress())) {
-                    personPhone.add(person.getPhone());
-                }
-            }
-
-            return personPhone.stream().distinct().collect(Collectors.toList());
-        }
-        return null;
+        return personPhone.stream().distinct().collect(Collectors.toList());
     }
 
+    /**
+     * recherche des personnes par adresse
+     *
+     * @param address des habitants à rechercher
+     */
     @Override
     public List<FireDto> fire(String address) {
 
-        boolean addressExist = false;
         List<FireDto> fireDtoList = new ArrayList<>();
 
-        for (Firestations firestation : firestationsDaoInterface.getAll()) {
-            if (firestation.getAddress().equals(address)) {
-                addressExist = true;
+        List<Persons> persons = new ArrayList<>();
+        try {
+            persons=personsDaoInterface.getAll();
+        } catch (Exception exception) {
+            logger.error("Erreur lors de la recherche des numéro de téléphone associé au numéro de la caserne: " + exception.getMessage());
+        }
+
+        for (Persons person : persons) {
+            if (person.getFirestations().getAddress().equals(address)) {
+                FireDto fireDtoPerson = new FireDto(person.getFirestations().getStation(), person.getFirstName(), person.getLastName(), person.getPhone(), person.getMedicalRecords().getAge(), person.getMedicalRecords().getMedications(), person.getMedicalRecords().getAllergies());
+                fireDtoList.add(fireDtoPerson);
             }
         }
 
-        if (addressExist) {
-            for (Persons person : personsDaoInterface.getAll()) {
-                if (person.getFirestations().getAddress().equals(address)) {
-                    FireDto fireDtoPerson = new FireDto(person.getFirestations().getStation(), person.getFirstName(), person.getLastName(), person.getPhone(), person.getMedicalRecords().getAge(), person.getMedicalRecords().getMedications(), person.getMedicalRecords().getAllergies());
-                    fireDtoList.add(fireDtoPerson);
-                }
-            }
-            return fireDtoList;
-        }
-
-        return null;
+        return fireDtoList;
     }
 
+    /**
+     * recherche des foyer déservis par une caserne
+     *
+     * @param listStations liste des casernes par leurs numéros
+     */
     @Override
     public List<HouseholdDto> flood(List<String> listStations) {
 
         List<String> foundAddress = new ArrayList<>();
         List<HouseholdDto> householdsList = new ArrayList<>();
         boolean stationExist = false;
+
+        List<Persons> persons = new ArrayList<>();
+        try {
+            persons = personsDaoInterface.getAll();
+        } catch (Exception exception) {
+            logger.error("Erreur lors de la recherche des numéro de téléphone associé au numéro de la caserne: " + exception.getMessage());
+        }
 
         for (String station : listStations) {
             for (Firestations firestation : firestationsDaoInterface.getAll()) {
@@ -165,7 +226,7 @@ public class FirestationsServiceImpl implements FirestationsServiceInterface{
             if (stationExist) {
                 for (String address : foundAddress) {
                     List<FloodDto> floodList = new ArrayList<>();
-                    for (Persons person : personsDaoInterface.getAll()) {
+                    for (Persons person : persons) {
                         if (person.getAddress().equals(address)) {
                             FloodDto flood = new FloodDto(person.getFirstName(), person.getLastName(), person.getPhone(), person.getMedicalRecords().getAge(), person.getMedicalRecords().getMedications(), person.getMedicalRecords().getAllergies());
                             floodList.add(flood);
