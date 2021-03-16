@@ -133,7 +133,6 @@ class FirestationsControllerIT {
     }
 
     @Test
-
     public void TestFindFire_WithNonValidAddress() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get("/fire")
                 .contentType(APPLICATION_JSON).param("address", "3721 Fanxot St"))

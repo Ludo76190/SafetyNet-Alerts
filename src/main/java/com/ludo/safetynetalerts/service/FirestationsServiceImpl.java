@@ -125,7 +125,7 @@ public class FirestationsServiceImpl implements FirestationsServiceInterface{
             return null;
         }
 
-        int nbChildren =0;
+        int nbChildren = 0;
         int nbAdults = 0;
 
         for (Persons person : persons) {
