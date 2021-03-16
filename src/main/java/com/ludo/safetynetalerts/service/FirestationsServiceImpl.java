@@ -117,7 +117,7 @@ public class FirestationsServiceImpl implements FirestationsServiceInterface{
 
         List<Persons> foundPerson = new ArrayList<>();
 
-        List<Persons> persons = new ArrayList<>();
+        List<Persons> persons;
         try {
             persons=personsDaoInterface.getAll();
         } catch (Exception exception) {
@@ -218,7 +218,7 @@ public class FirestationsServiceImpl implements FirestationsServiceInterface{
         List<HouseholdDto> householdsList = new ArrayList<>();
         boolean stationExist = false;
 
-        List<Persons> persons = new ArrayList<>();
+        List<Persons> persons;
         try {
             persons = personsDaoInterface.getAll();
         } catch (Exception exception) {

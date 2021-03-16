@@ -76,7 +76,7 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsServiceInterface
     @Override
     public MedicalRecords updateMedicalRecord(MedicalRecords updatedMedicalRecord) {
 
-        List<MedicalRecords> medicalRecords = new ArrayList<>();
+        List<MedicalRecords> medicalRecords;
         try {
             medicalRecords = medicalRecordsDaoInterface.getAll();
         } catch (Exception exception) {
