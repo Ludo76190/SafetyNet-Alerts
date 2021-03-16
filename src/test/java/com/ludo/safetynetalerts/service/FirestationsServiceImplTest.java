@@ -134,6 +134,13 @@ class FirestationsServiceImplTest {
     }
 
     @Test
+    void testFindAll_thenReturnException() {
+        when(dataBase.getFirestations()).thenThrow(NullPointerException.class);
+        List<Firestations> foundFirestation = firestationsServiceInterface.findAll();
+        assertNull(foundFirestation);
+    }
+
+    @Test
     void testFindByNumber() {
 
         PersonCounterDto personCounterDto = firestationsServiceInterface.findByNumber("3");
@@ -143,6 +150,13 @@ class FirestationsServiceImplTest {
         assertEquals(1, personCounterDto.getAdultsNumber());
         assertEquals(1, personCounterDto.getChildrenNumber());
 
+    }
+
+    @Test
+    void testFindByNumber_thenReturnException() {
+        when(dataBase.getPersons()).thenThrow(NullPointerException.class);
+        PersonCounterDto personCounterDto = firestationsServiceInterface.findByNumber("3");
+        assertNull(personCounterDto);
     }
 
     @Test
@@ -158,6 +172,13 @@ class FirestationsServiceImplTest {
     }
 
     @Test
+    void testPhoneAlert_thenReturnException() {
+        when(dataBase.getPersons()).thenThrow(NullPointerException.class);
+        List<String> phoneList = firestationsServiceInterface.phoneAlert("2");
+        assertNull(phoneList);
+    }
+
+    @Test
     void testFire() {
 
         List<FireDto> fireList = firestationsServiceInterface.fire("1509 Culver St");
@@ -168,6 +189,13 @@ class FirestationsServiceImplTest {
     }
 
     @Test
+    void testFire_thenReturnException() {
+        when(dataBase.getPersons()).thenThrow(NullPointerException.class);
+        List<FireDto> fireList = firestationsServiceInterface.fire("1509 Culver St");
+        assertNull(fireList);
+    }
+
+    @Test
     void testFlood() {
 
         List<String> stationsList = new ArrayList<>();
@@ -175,14 +203,20 @@ class FirestationsServiceImplTest {
 
         List<HouseholdDto> floodList = firestationsServiceInterface.flood(stationsList);
 
-        for (HouseholdDto test: floodList) {
-            System.out.println(test.getAddress());
-        }
-
-
         assertNotNull(floodList);
         assertEquals(1, floodList.size());
         assertEquals("112 Steppes Pl", floodList.get(0).getAddress());
 
     }
+
+    @Test
+    void testFlood_thenReturnException() {
+        when(dataBase.getPersons()).thenThrow(NullPointerException.class);
+
+        List<String> stationsList = new ArrayList<>();
+        stationsList.add("2");
+        List<HouseholdDto> floodList = firestationsServiceInterface.flood(stationsList);
+        assertNull(floodList);
+    }
+
 }

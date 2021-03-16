@@ -17,8 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -106,6 +105,13 @@ class PersonsServiceImplTest {
     }
 
     @Test
+    void testFindAll_thenReturnException() {
+        when(dataBase.getPersons()).thenThrow(NullPointerException.class);
+        List<Persons> foundPersons = personsServiceInterface.findAll();
+        assertNull(foundPersons);
+    }
+
+    @Test
     void testFindByName_ThenAPersonShouldBeReturned() {
 
         Persons foundPerson = personsServiceInterface.findByName("Jacob","Boyd");
@@ -117,13 +123,25 @@ class PersonsServiceImplTest {
     }
 
     @Test
-    void testFindChild_ThenReturnChildAndAdultsList() {
+    void testFindByName_thenReturnException() {
+        when(dataBase.getPersons()).thenThrow(NullPointerException.class);
+        Persons foundPerson = personsServiceInterface.findByName("Jacob","Boyd");
+        assertNull(foundPerson);
+    }
 
+    @Test
+    void testFindChild_ThenReturnChildAndAdultsList() {
         List<ChildAlertDto> foundChild = personsServiceInterface.findChild("1509 Culver St");
 
         assertNotNull(foundChild);
         assertEquals(3, foundChild.size());
+    }
 
+    @Test
+    void testFindChild_thenReturnException() {
+        when(dataBase.getPersons()).thenThrow(NullPointerException.class);
+        List<ChildAlertDto> foundChild = personsServiceInterface.findChild("1509 Culver St");
+        assertNull(foundChild);
     }
 
 
@@ -137,11 +155,25 @@ class PersonsServiceImplTest {
     }
 
     @Test
+    void testpersonInfo_thenReturnException() {
+        when(dataBase.getPersons()).thenThrow(NullPointerException.class);
+        List<PersonInfoDto> foundPerson = personsServiceInterface.personInfo("John","Boyd");
+        assertNull(foundPerson);
+    }
+
+    @Test
     void testCommunityEmail() {
 
         List<String> personsEmail = personsServiceInterface.communityEmail("Culver");
 
         assertNotNull(personsEmail);
         assertEquals(3, personsEmail.size());
+    }
+
+    @Test
+    void estCommunityEmail_thenReturnException() {
+        when(dataBase.getPersons()).thenThrow(NullPointerException.class);
+        List<String> personsEmail = personsServiceInterface.communityEmail("Culver");
+        assertNull(personsEmail);
     }
 }

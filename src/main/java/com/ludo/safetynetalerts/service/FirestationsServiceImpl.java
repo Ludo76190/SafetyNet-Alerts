@@ -122,6 +122,7 @@ public class FirestationsServiceImpl implements FirestationsServiceInterface{
             persons=personsDaoInterface.getAll();
         } catch (Exception exception) {
             logger.error("Erreur lors de la recherche des caserne par le numéro: " + exception.getMessage());
+            return null;
         }
 
         int nbChildren =0;
@@ -138,6 +139,9 @@ public class FirestationsServiceImpl implements FirestationsServiceInterface{
             }
         }
 
+        if (foundPerson.isEmpty()) {
+            return null;
+        }
         return new PersonCounterDto(foundPerson, nbAdults, nbChildren);
     }
 
@@ -219,6 +223,7 @@ public class FirestationsServiceImpl implements FirestationsServiceInterface{
             persons = personsDaoInterface.getAll();
         } catch (Exception exception) {
             logger.error("Erreur lors de la recherche des numéro de téléphone associé au numéro de la caserne: " + exception.getMessage());
+            return null;
         }
 
         for (String station : listStations) {
