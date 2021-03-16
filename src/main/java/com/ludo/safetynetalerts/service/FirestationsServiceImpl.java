@@ -164,6 +164,10 @@ public class FirestationsServiceImpl implements FirestationsServiceInterface{
             }
         }
 
+        if (personPhone.isEmpty()) {
+            return null;
+        }
+
         return personPhone.stream().distinct().collect(Collectors.toList());
     }
 
@@ -189,6 +193,10 @@ public class FirestationsServiceImpl implements FirestationsServiceInterface{
                 FireDto fireDtoPerson = new FireDto(person.getFirestations().getStation(), person.getFirstName(), person.getLastName(), person.getPhone(), person.getMedicalRecords().getAge(), person.getMedicalRecords().getMedications(), person.getMedicalRecords().getAllergies());
                 fireDtoList.add(fireDtoPerson);
             }
+        }
+
+        if (fireDtoList.isEmpty()) {
+            return null;
         }
 
         return fireDtoList;
