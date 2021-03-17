@@ -171,7 +171,7 @@ class PersonsServiceImplTest {
     }
 
     @Test
-    void estCommunityEmail_thenReturnException() {
+    void testCommunityEmail_thenReturnException() {
         when(dataBase.getPersons()).thenThrow(NullPointerException.class);
         List<String> personsEmail = personsServiceInterface.communityEmail("Culver");
         assertNull(personsEmail);

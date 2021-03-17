@@ -27,7 +27,7 @@ public class DataBase {
     @PostConstruct
     public void init() {
         DataBase dataBase = new DataBase();
-        byte[] jsonData = "".getBytes();
+        byte[] jsonData = new byte[0];;
 
         try {
             //read json file data to String
