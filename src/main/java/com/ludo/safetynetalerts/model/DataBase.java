@@ -26,43 +26,52 @@ public class DataBase {
 
     @PostConstruct
     public void init() {
-        DataBase dataBase;
+        DataBase dataBase = new DataBase();
+        byte[] jsonData = "".getBytes();
+
         try {
             //read json file data to String
             logger.debug("Loading Data File");
-            byte[] jsonData = Files.readAllBytes(Paths.get("src/main/resources/data.json"));
+            jsonData = Files.readAllBytes(Paths.get("src/main/resources/data.json"));
+            logger.debug("Data File loaded");
+        } catch (IOException e) {
+            logger.debug("Error while loading Data File");
+            e.printStackTrace();
+        }
 
-            ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
             dataBase = mapper.readValue(jsonData, DataBase.class);
-            this.persons = dataBase.getPersons();
-            this.firestations = dataBase.getFirestations();
-            this.medicalrecords = dataBase.getMedicalrecords();
-
-            for (Persons person: this.persons ) {
-                for (MedicalRecords medicalRecords : this.medicalrecords) {
-                    if (medicalRecords.getFirstName().equals(person.getFirstName()) && medicalRecords.getLastName().equals(person.getLastName())) {
-                        person.setMedicalRecords(medicalRecords);
-                    }
-                }
-            }
-
-            for (Persons person: this.persons) {
-                for (Firestations firestation : this.firestations) {
-                    if (firestation.getAddress().equals(person.getAddress())) {
-                        person.setFirestations(firestation);
-                        //firestation.getPersons().add(person);
-                        firestation.setPersons(persons);
-                    }
-                }
-            }
-
-            for (MedicalRecords medicalRecord : dataBase.medicalrecords) {
-                int age = AgeCalculator.calculateAge(medicalRecord.getBirthdate(), LocalDate.now());
-                medicalRecord.setAge(age);
-            }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        this.persons = dataBase.getPersons();
+        this.firestations = dataBase.getFirestations();
+        this.medicalrecords = dataBase.getMedicalrecords();
+
+        for (Persons person: this.persons ) {
+            for (MedicalRecords medicalRecords : this.medicalrecords) {
+                if (medicalRecords.getFirstName().equals(person.getFirstName()) && medicalRecords.getLastName().equals(person.getLastName())) {
+                    person.setMedicalRecords(medicalRecords);
+                }
+            }
+        }
+
+        for (Persons person: this.persons) {
+            for (Firestations firestation : this.firestations) {
+                if (firestation.getAddress().equals(person.getAddress())) {
+                    person.setFirestations(firestation);
+                    //firestation.getPersons().add(person);
+                    firestation.setPersons(persons);
+                }
+            }
+        }
+
+        for (MedicalRecords medicalRecord : dataBase.medicalrecords) {
+            int age = AgeCalculator.calculateAge(medicalRecord.getBirthdate(), LocalDate.now());
+            medicalRecord.setAge(age);
+        }
+
     }
 }
