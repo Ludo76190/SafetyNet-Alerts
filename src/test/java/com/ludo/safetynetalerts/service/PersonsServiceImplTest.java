@@ -113,7 +113,6 @@ class PersonsServiceImplTest {
 
     @Test
     void testFindByName_ThenAPersonShouldBeReturned() {
-
         Persons foundPerson = personsServiceInterface.findByName("Jacob","Boyd");
 
         assertNotNull(foundPerson);
