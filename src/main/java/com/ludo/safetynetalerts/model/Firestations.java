@@ -12,6 +12,6 @@ public class Firestations {
     private String station;
 
     @JsonIgnore
-    private List<com.ludo.safetynetalerts.model.Persons> persons = new ArrayList<>();
+    private List<Persons> persons = new ArrayList<>();
 
 }
